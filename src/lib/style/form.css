@@ -1,0 +1,53 @@
+
+/* Container to wrap the label and input */
+.form-group {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 1.5rem; /* space between form groups */
+}
+
+/* Label styles */
+label {
+	font-size: 1rem;
+	font-weight: 600;
+	color: #333;
+	margin-bottom: 0.5rem;
+}
+
+/* Input field styles */
+input[type='text'] {
+	font-size: 1rem;
+	padding: 0.75rem 1rem;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	background-color: #f9f9f9;
+	color: #333;
+	width: 100%; /* responsive full width */
+	box-sizing: border-box; /* ensures padding is included in the width */
+	transition:
+		border-color 0.3s ease,
+		box-shadow 0.3s ease;
+}
+
+/* Focus state for input */
+input[type='text']:focus {
+	border-color: #007bff; /* blue border on focus */
+	box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1); /* light blue shadow */
+	outline: none; /* removes default focus outline */
+}
+
+/* Responsive typography and spacing */
+@media (min-width: 768px) {
+	label {
+		font-size: 1.125rem; /* slightly larger label on larger screens */
+	}
+
+	input[type='text'] {
+		font-size: 1.125rem;
+		padding: 1rem 1.25rem; /* increase padding for better touch area */
+	}
+
+	.form-group {
+		margin-bottom: 2rem; /* increase margin between form groups on larger screens */
+	}
+}
