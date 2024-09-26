@@ -1,5 +1,5 @@
 <!-- FriendList.svelte -->
-<script lang="ts">
+<!-- <script lang="ts">
     import { liveQuery } from "dexie";
     import { db } from "$lib/db";
 
@@ -25,7 +25,8 @@
         {#each $restaurants as restaurant (restaurant.id)}
             <div>{restaurant.id}</div>
             <div>{restaurant.name}</div>
+            <div>{restaurant.nae}</div>
             <button on:click={() => deleteRestaurant(restaurant.id)}>Delete</button>
         {/each}
     {/if}
-</div>
+</div> -->
