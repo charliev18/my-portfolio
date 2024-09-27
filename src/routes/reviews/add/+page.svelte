@@ -1,20 +1,11 @@
-<!-- FriendAdder.svelte -->
 <script lang="ts">
 	import { db } from "$lib/db";
     import "$lib/style/form.css";
+    import Tab, { Icon, Label } from '@smui/tab';
+    import TabBar from '@smui/tab-bar';
+    import StarRating from "$lib/components/starRating.svelte";
 
     let status = "";
-
-    // let restaurantName = "";
-    // let foodScore: number | undefined;
-    // let drinkScore: number | undefined;
-    // let serviceScore: number | undefined;
-    // let ambianceScore: number | undefined;
-    // let wowScore: boolean | undefined;
-    // let presentationScore: number | undefined;
-    // let vibesScore: boolean | undefined;
-    // let valueScore: number | undefined;
-    // let comment: string | undefined;
 
     interface NumberOptions {
         min: number,
@@ -22,41 +13,44 @@
         step: number,
     }
 
-    let starOptions: NumberOptions = { min: 0, max: 0, step: .25 };
-    let yesNoOptions: NumberOptions = { min: 0, max: 1, step: .25 };
+    const yesNoOptions: NumberOptions = { min: 0, max: 1, step: 1 };
 
     interface FormStep {
         label: string,
         type: string,
-        bind: string,
-        key: string,
         value: number | string | undefined,
+        icon: string,
         typeOptions: NumberOptions | {},
     }
 
     let formSteps: FormStep[] = [
-        { label: "Name", type: "text", bind: 'my-class', key: "restaurantName", value: undefined, typeOptions: {} },
-        { label: "Food", type: "number", bind: 'my-class', key: "foodScore", value: undefined, typeOptions: starOptions },
-        { label: "Drinks", type: "number", bind: 'my-class', key: "drinkScore", value: undefined, typeOptions: starOptions },
-        { label: "Service", type: "number", bind: 'my-class', key: "foodScore", value: undefined, typeOptions: starOptions },
-        { label: "Ambiance", type: "number", bind: 'my-class', key: "ambianceScore", value: undefined, typeOptions: starOptions },
-        { label: "Wow", type: "number", bind: 'my-class', key: "wowScore", value: undefined, typeOptions: yesNoOptions },
-        { label: "Presentation", type: "number", bind: 'my-class', key: "presentationScore", value: undefined, typeOptions: starOptions },
-        { label: "Vibes", type: "number", bind: 'my-class', key: "vibesScore", value: undefined, typeOptions: yesNoOptions },
-        { label: "Value", type: "number", bind: 'my-class', key: "valueScore", value: undefined, typeOptions: starOptions },
-        { label: "Comment", type: "textarea", bind: 'my-class', key: "commentScore", value: undefined, typeOptions: {} },
+        { label: "Name", type: "text", value: undefined, "icon": "", typeOptions: {} },
+        { label: "Food", type: "star", value: 1, "icon": "", typeOptions: {} },
+        { label: "Drinks", type: "star", value: undefined, "icon": "", typeOptions: {} },
+        { label: "Service", type: "star", value: undefined, "icon": "", typeOptions: {} },
+        { label: "Ambiance", type: "star", value: undefined, "icon": "", typeOptions: {} },
+        { label: "Wow", type: "number", value: undefined, "icon": "", typeOptions: yesNoOptions },
+        { label: "Presentation", type: "star", value: undefined, "icon": "", typeOptions: {} },
+        { label: "Vibes", type: "star", value: undefined, "icon": "", typeOptions: yesNoOptions },
+        { label: "Value", type: "star", value: undefined, "icon": "", typeOptions: {} },
+        { label: "Comment", type: "textarea", value: undefined, "icon": "", typeOptions: {} },
     ];
 
     let activeIndex = 0;
+    let active = formSteps[activeIndex];
+
+    $: activeIndex = formSteps.findIndex(step => step === active);
 
     function nextItem() {
         // Increment the index and loop back to the start if necessary
         activeIndex = (activeIndex + 1) % formSteps.length;
+        active = formSteps[activeIndex];
     }
 
     function prevItem() {
         // Decrement the index and loop to the end if necessary
         activeIndex = (activeIndex - 1 + formSteps.length) % formSteps.length;
+        active = formSteps[activeIndex];
     }
 
     function getClassesForIndex(index : number) {
@@ -104,8 +98,15 @@
 
 </script>
 
+<TabBar tabs={formSteps} let:tab bind:active>
+    <Tab {tab}>
+        <Icon class="material-icons">{tab.icon}</Icon>
+        <Label>{tab.label}</Label>
+    </Tab>
+</TabBar>
 
 <p>{status}</p>
+<div class="form-wrapper">
 <div class="form-container" style="transform: translateX(-{activeIndex * 100}%);">
     {#each formSteps as formStep, i }
         <div class={getClassesForIndex(i)}>
@@ -115,6 +116,9 @@
                     type={formStep.type}
                     bind:value={formStep.value}
                 />
+            {:else if formStep.type === 'star'}
+                {formStep.value}
+                <StarRating bind:rating={formStep.value as number}/>
             {:else if formStep.type === 'number'}
                 <input
                     type={formStep.type}
@@ -129,6 +133,7 @@
         </div>
     {/each}
 </div>
+</div>
 <div class="form-controls">
     <div class="nav-buttons">
         <button on:click={prevItem} class="btn prev-btn">Prev</button>
@@ -140,8 +145,7 @@
 <style>
     .form-wrapper {
         width: 100%;
-        display: flex;
-        flex-direction: column;
+        overflow: hidden;
     }
 
     .form-container {
@@ -174,21 +178,6 @@
         margin-bottom: 10px; /* Space between the nav buttons and the submit button */
     }
 
-    /* Shared button styles */
-    .btn {
-        max-width: 10em;
-        padding: 8px 12px; /* Smaller padding for buttons */
-        border: none;
-        border-radius: 4px; /* Slightly smaller border-radius for compactness */
-        color: white;
-        font-size: 14px; /* Smaller font size for compact buttons */
-        font-weight: 500;
-        cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-        flex: 1; /* Allow buttons to grow */
-    }
-
     /* Specific button styles */
     .prev-btn {
         background-color: #6c757d; /* Gray color for the "Prev" button */
@@ -209,6 +198,7 @@
     .submit-btn {
         background-color: #28a745; /* Green color for the "Add Review" button */
         margin-top: 10px; /* Space above the submit button */
+        align-self: center;
     }
 
     .submit-btn:hover {

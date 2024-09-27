@@ -3,6 +3,9 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
+		"prepare": "npm run smui-theme-light && npm run smui-theme-dark",
+		"smui-theme-light": "smui-theme compile static/smui.css -i src/theme",
+		"smui-theme-dark": "smui-theme compile static/smui-dark.css -i src/theme/dark",
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
@@ -15,7 +18,10 @@
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
+		"@mdi/js": "^7.4.47",
 		"@playwright/test": "^1.28.1",
+		"@smui/tab": "^8.0.0-alpha.0",
+		"@smui/tab-bar": "^8.0.0-alpha.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
@@ -26,6 +32,7 @@
 		"globals": "^15.0.0",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",
+		"smui-theme": "^7.0.0",
 		"svelte": "^5.0.0-next.1",
 		"svelte-check": "^4.0.0",
 		"typescript": "^5.0.0",
