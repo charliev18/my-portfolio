@@ -1,19 +1,37 @@
 <script lang="ts">
 	export let rating: number;
+	const maxStars = 5;
+
+	// Calculate the percentage of stars to fill based on the slider value
+	$: percentage = rating * 98 / maxStars;
+
+	let touchX = 0;
+	export let isTouching = false;
+
+	// Update the position of the div as the user moves their thumb
+	function handleTouchMove(event: TouchEvent) {
+		const touch = event.touches[0];
+		touchX = touch.clientX;
+	}
+
+	function handleTouchStart() {
+		isTouching = true;
+	}
+
+	function handleTouchEnd() {
+		isTouching = false;
+	}
 </script>
 
 <div class="star-wrapper">
-<input class="rating rating--nojs" max="5" step=".25" type="range" bind:value={rating}>
+	<div class="star-empty"></div>
+	<div class="star-fill" style="width: {percentage}%;"></div>
+	<input class="rating rating--nojs" max="5" step=".25" type="range" bind:value={rating}>
 </div>
 
 <style>
+	/* Holds entire star rating slider */
 	.star-wrapper {
-		display: flex;
-		align-items: center;
-		width: 100%;
-	}
-
-	.rating {
 		--dir: right;
 		--fill: gold;
 		--fillbg: rgba(100, 100, 100, 0.15);
@@ -23,6 +41,35 @@
 		--value: 1;
 		--w: calc(var(--stars) * var(--starsize));
 		--x: calc(100% * (var(--value) / var(--stars)));
+		position: relative;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.star-empty {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: calc(var(--starsize) * 5);
+		height: var(--starsize);
+		background: var(--fillbg);
+		background-color: var(--fillbg);
+		mask: repeat left center/var(--starsize) var(--symbol);
+		-webkit-mask: repeat left center/var(--starsize) var(--symbol);
+	}
+
+	.star-fill {
+		position: absolute;
+		left: 0;
+		top: 0;
+		background-color: gold;
+		height: var(--starsize);
+		opacity: 1;
+		z-index: 3;
+		mask: repeat left center/var(--starsize) var(--symbol);
+	}
+
+	.rating {
 		block-size: var(--starsize);
 		inline-size: var(--w);
 		position: relative;
@@ -31,41 +78,12 @@
 		appearance: none;
 		width: var(--w);
 		touch-action: manipulation;
-		margin-left: auto;
-		margin-right: auto;
-	}
-	
-	.rating::-moz-range-track {
-		background: var(--fillbg);
-		block-size: 100%;
-		mask: repeat left center/var(--starsize) var(--symbol);
-	}
-	
-	.rating::-webkit-slider-runnable-track {
-		background: var(--fillbg);
-		block-size: 100%;
-		mask: repeat left center/var(--starsize) var(--symbol);
-		-webkit-mask: repeat left center/var(--starsize) var(--symbol);
-	}
-	
-	.rating::-moz-range-thumb {
-		height: var(--starsize);
 		opacity: 0;
+		z-index: 100;
+	}
+
+	.rating::-moz-range-thumb {
 		width: var(--starsize);
-	}
-	
-	.rating::-webkit-slider-thumb {
-		background-color: var(--fill);
-		box-shadow: calc(0rem - var(--w)) 0 0 var(--w) var(--fill);
-		height: var(--starsize) * 2;
-		opacity: 1;
-		width: 3px;
-		-webkit-appearance: none;
-	}
-	
-	.rating::-moz-range-progress {
-		background: var(--fill);
-		block-size: 100%;
-		mask: repeat left center/var(--starsize) var(--star);
+		height: var(--starsize);
 	}
 </style>
