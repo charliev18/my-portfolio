@@ -30,6 +30,7 @@
 		-webkit-appearance: none;
 		appearance: none;
 		width: var(--w);
+		touch-action: manipulation;
 		margin-left: auto;
 		margin-right: auto;
 	}
@@ -58,7 +59,7 @@
 		box-shadow: calc(0rem - var(--w)) 0 0 var(--w) var(--fill);
 		height: var(--starsize);
 		opacity: 1;
-		width: 1px;
+		width: var(--starsize);
 		-webkit-appearance: none;
 	}
 	
