@@ -57,9 +57,9 @@
 	.rating::-webkit-slider-thumb {
 		background-color: var(--fill);
 		box-shadow: calc(0rem - var(--w)) 0 0 var(--w) var(--fill);
-		height: var(--starsize);
+		height: var(--starsize) * 2;
 		opacity: 1;
-		width: var(--starsize);
+		width: 3px;
 		-webkit-appearance: none;
 	}
 	
