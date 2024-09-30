@@ -20,6 +20,8 @@
 	"devDependencies": {
 		"@mdi/js": "^7.4.47",
 		"@playwright/test": "^1.28.1",
+		"@smui/button": "^8.0.0-alpha.0",
+		"@smui/icon-button": "^8.0.0-alpha.0",
 		"@smui/tab": "^8.0.0-alpha.0",
 		"@smui/tab-bar": "^8.0.0-alpha.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
@@ -42,9 +44,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@vercel/postgres": "^0.10.0",
 		"dexie": "^4.0.8",
-		"dexie-cloud-addon": "^4.0.8",
-		"dotenv": "^16.4.5"
+		"dexie-cloud-addon": "^4.0.8"
 	}
 }
