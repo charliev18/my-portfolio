@@ -1,32 +1,33 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+
 	export let rating: number;
 	const maxStars = 5;
 
-	// Calculate the percentage of stars to fill based on the slider value
+	// Calculate the percentage of stars to fill based on the slider value.
+	// HACK: For some reason the width of the 5 star mask seems to be 98% of the div width... But it works :)
 	$: percentage = rating * 98 / maxStars;
 
-	let touchX = 0;
-	export let isTouching = false;
-
-	// Update the position of the div as the user moves their thumb
-	function handleTouchMove(event: TouchEvent) {
-		const touch = event.touches[0];
-		touchX = touch.clientX;
-	}
-
-	function handleTouchStart() {
-		isTouching = true;
-	}
-
 	function handleTouchEnd() {
-		isTouching = false;
+		dispatch("submitStar");
 	}
+
+	function handleTouchMove(event: TouchEvent) {
+		event.preventDefault();
+        const touch = event.touches[0];
+        const slider = event.target as HTMLInputElement;
+        const rect = slider.getBoundingClientRect();
+        const newValue = ((touch.clientX - rect.left) / rect.width) * +slider.max;
+		rating = +(Math.round(Math.min(Math.max(newValue, 0), Number(slider.max)) * 4) / 4).toFixed(2);
+    }
 </script>
 
 <div class="star-wrapper">
 	<div class="star-empty"></div>
 	<div class="star-fill" style="width: {percentage}%;"></div>
-	<input class="rating rating--nojs" max="5" step=".25" type="range" bind:value={rating}>
+	<input class="rating" max="5" step=".25" type="range" bind:value={rating} on:touchmove={handleTouchMove} on:touchend={handleTouchEnd}>
 </div>
 
 <style>
@@ -46,6 +47,7 @@
 		margin-right: auto;
 	}
 
+	/* Grey empty star shapes, created by the mask */
 	.star-empty {
 		position: absolute;
 		left: 0;
@@ -58,6 +60,7 @@
 		-webkit-mask: repeat left center/var(--starsize) var(--symbol);
 	}
 
+	/* Gold filled star shapes, rendered on top of empty stars and shaped by mask */
 	.star-fill {
 		position: absolute;
 		left: 0;
@@ -65,25 +68,20 @@
 		background-color: gold;
 		height: var(--starsize);
 		opacity: 1;
-		z-index: 3;
+		z-index: 1;
 		mask: repeat left center/var(--starsize) var(--symbol);
+		pointer-events: none;
 	}
 
+	/* Base slider styling */
 	.rating {
 		block-size: var(--starsize);
 		inline-size: var(--w);
 		position: relative;
-		touch-action: manipulation;
 		-webkit-appearance: none;
 		appearance: none;
 		width: var(--w);
 		touch-action: manipulation;
 		opacity: 0;
-		z-index: 100;
-	}
-
-	.rating::-moz-range-thumb {
-		width: var(--starsize);
-		height: var(--starsize);
 	}
 </style>
